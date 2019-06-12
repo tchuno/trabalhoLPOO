@@ -29,6 +29,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
     public JanelaFormulario() {
         
         initComponents();
+        System.out.println("TESTE");
     }
 
     /**
