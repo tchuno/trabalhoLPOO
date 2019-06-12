@@ -4,7 +4,6 @@ package modelos;
  *
  * @author babar
  */
-import java.math.*;
 public class Circulo extends Forma {
     private double raio;
 

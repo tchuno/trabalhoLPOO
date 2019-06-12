@@ -11,7 +11,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author babar
@@ -23,13 +22,19 @@ public class JanelaFormulario extends javax.swing.JFrame {
     private final TabelaPedido tabPedido = new TabelaPedido();
     private final List<Pedido> listaDePedidos = new ArrayList();
     private int linhaPedido=-1;
+    private final List<Material> materiais = new ArrayList();
+    private final List<Forma> forma = new ArrayList();
+    private final Util util = new Util();
+    
+
     /**
      * Creates new form NovoJFrame2
      */
     public JanelaFormulario() {
         
         initComponents();
-       
+        util.popularMateriais(materiais);
+   
     }
 
     /**
@@ -91,7 +96,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        matrialPreco = new javax.swing.JComboBox();
+        materialPreco = new javax.swing.JComboBox();
         m2Preco = new javax.swing.JTextField();
         atualizarPreco = new javax.swing.JButton();
 
@@ -249,21 +254,30 @@ public class JanelaFormulario extends javax.swing.JFrame {
 
         jLabel4.setText("Forma do Tapete:");
 
-        formaPedido.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Retângulo", "Triângulo", "Círculo" }));
-        formaPedido.setToolTipText("Retângulo, Triângulo, Círculo");
+        formaPedido.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Retangular", "Quadrado", "Triangular" }));
+        formaPedido.setToolTipText("");
 
         jLabel9.setText("Selecione o Material:");
 
-        materialPedido.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Comum", "Luxo", "Premium" }));
+        materialPedido.setModel(new GenericComboModel<Material>(materiais));
         materialPedido.setToolTipText("");
 
         jLabel10.setText("Altura (m):");
 
-        alturaPedido.setText("2");
+        alturaPedido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                alturaPedidoKeyPressed(evt);
+            }
+        });
 
         jLabel11.setText("Largura (m):");
 
-        larguraPedido.setText("2");
+        larguraPedido.setToolTipText("");
+        larguraPedido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                larguraPedidoKeyPressed(evt);
+            }
+        });
 
         incluirPedido.setText("Incluir ");
         incluirPedido.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -280,6 +294,11 @@ public class JanelaFormulario extends javax.swing.JFrame {
         });
 
         excluirPedido.setText("Excluir");
+        excluirPedido.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                excluirPedidoMouseClicked(evt);
+            }
+        });
 
         tabelaPedido.setModel(tabPedido);
         tabelaPedido.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -291,9 +310,11 @@ public class JanelaFormulario extends javax.swing.JFrame {
 
         jLabel14.setText("Total do Pedido:");
 
-        totalPedido.setText("jTextField5");
+        totalPedido.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
 
         jLabel15.setText("Tamanho:");
+
+        tamanhoPedido.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -424,9 +445,12 @@ public class JanelaFormulario extends javax.swing.JFrame {
 
         jLabel13.setText("Preço do M2:");
 
-        matrialPreco.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        m2Preco.setText("jTextField4");
+        materialPreco.setModel(new GenericComboModel<Material>(materiais));
+        materialPreco.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                materialPrecoItemStateChanged(evt);
+            }
+        });
 
         atualizarPreco.setText("Atualizar");
         atualizarPreco.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -448,7 +472,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
                             .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(matrialPreco, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(materialPreco, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(m2Preco, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -461,7 +485,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(matrialPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(materialPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -490,12 +514,11 @@ public class JanelaFormulario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void incluirClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incluirClienteMouseClicked
-
         try{
         String nome = nomeCliente.getText();
         String email = emailCliente.getText();
         LocalDate dataNascimento = LocalDate.parse(dataCliente.getText(),DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        String cpf = imprimeCPF(cpfCliente.getText());
+        String cpf = util.imprimeCPF(cpfCliente.getText());
         Cliente cliente = new Cliente(-1L,nome,email,cpf,dataNascimento);
         listaDeClientes.add(cliente);
         tabCliente.adicionaCliente(cliente);
@@ -505,17 +528,6 @@ public class JanelaFormulario extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "CPF Inválido");
         }      
     }//GEN-LAST:event_incluirClienteMouseClicked
-
-     public static String imprimeCPF(String CPF) {
-           return(CPF.substring(0, 3) + "." + CPF.substring(3, 6) + "." +
-           CPF.substring(6, 9) + "-" + CPF.substring(9, 11));
-        }
-     
-    public static String limpaCPF(String CPF) {
-        CPF = CPF.replaceAll("\\.", "");
-        CPF = CPF.replaceAll("-", "");
-        return CPF;
-     }
      
     private void listarClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listarClienteMouseClicked
         tabCliente.atualizarTabela(listaDeClientes);
@@ -528,7 +540,6 @@ public class JanelaFormulario extends javax.swing.JFrame {
     }//GEN-LAST:event_limparClienteMouseClicked
 
     private void alterarClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_alterarClienteMouseClicked
-    
         if(linhaCliente!=-1){
             Cliente cliente = tabCliente.getCliente(linhaCliente);
             if(cliente == null){
@@ -538,17 +549,12 @@ public class JanelaFormulario extends javax.swing.JFrame {
             cliente.setDataNascimento(dataNascimento);
             cliente.setNome(nomeCliente.getText());
             cliente.setEmail(emailCliente.getText());
-            cliente.setCpf(imprimeCPF(cpfCliente.getText()));
+            cliente.setCpf(util.imprimeCPF(cpfCliente.getText()));
             //Atualiza tabela
             tabCliente.fireTableRowsUpdated(linhaCliente, linhaCliente);
             
         }
     }//GEN-LAST:event_alterarClienteMouseClicked
-
-    public String toString(Double var){
-        String varD = String.valueOf(var);
-        return varD;
-    }
     
     private void excluirClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_excluirClienteMouseClicked
         int[] linhasSelecionadas = tabelaCliente.getSelectedRows();
@@ -573,7 +579,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
         nomeCliente.setText(cliente.getNome());
         dataCliente.setText(cliente.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         emailCliente.setText(cliente.getEmail());
-        cpfCliente.setText(limpaCPF(cliente.getCpf()));
+        cpfCliente.setText(util.limpaCPF(cliente.getCpf()));
     }//GEN-LAST:event_tabelaClienteMouseClicked
 
     private void pesquisarPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pesquisarPedidoMouseClicked
@@ -581,61 +587,94 @@ public class JanelaFormulario extends javax.swing.JFrame {
     }//GEN-LAST:event_pesquisarPedidoMouseClicked
 
     private void incluirPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incluirPedidoMouseClicked
-        // TODO add your handling code here:
-       
-        String forma = formaPedido.getActionCommand();
-        String material = materialPedido.getToolTipText();
+        Material pSelected = (Material) materialPedido.getSelectedItem();
+        String forma = String.valueOf(formaPedido.getSelectedItem());
+        String material = String.valueOf(materialPedido.getSelectedItem());
         String altura = alturaPedido.getText();
         String largura = larguraPedido.getText();
-        if(!largura.isEmpty() && !altura.isEmpty()){
-         tamanhoPedido.setText(calcularTamanho(altura, largura));
-        }
-        String tamanho = tamanhoPedido.getText();
-        String preco = "50";
+        String tamanho = tamanhoPedido.getText().replace("m²", "");
+        Double preco = pSelected.getValor();
   
-        Pedido pedido = new Pedido(-1L,forma, material, toDouble(largura), toDouble(altura), toDouble(tamanho), toDouble(preco));
+        Pedido pedido = new Pedido(-1L,forma, material, util.toDouble(largura), 
+        util.toDouble(altura), util.toDouble(tamanho), preco);
         listaDePedidos.add(pedido);
         tabPedido.adicionaPedido(pedido);
+        totalPedido.setText(tabPedido.atualizaPreco());
     }//GEN-LAST:event_incluirPedidoMouseClicked
-
-    public String calcularTamanho(String altura, String largura){
-        Double alturaD = Double.valueOf(altura);
-        Double larguraD = Double.valueOf(largura);
-        Double result = (alturaD)*(larguraD);
-        String resultStr = String.valueOf(result);
-      return resultStr;
-    }
-    
-   public double calcularPreco(Forma forma, Material material){
-      return ((forma.calcularArea())*(material.getValor()));
-    }
    
-   public double toDouble(String string){
-       if(string.contains(","))
-           string = string.replace(",", ".");
-      return Double.valueOf(string);
-    }
+    
+   
     
     private void alterarPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_alterarPedidoMouseClicked
-        // TODO add your handling code here:
+       if(linhaPedido!=-1){
+            Pedido pedido = tabPedido.getPedido(linhaPedido);
+            if(pedido == null){
+                return;
+            }
+            pedido.setForma(String.valueOf(formaPedido.getSelectedItem()));
+            pedido.setMaterial(String.valueOf(materialPedido.getSelectedItem()));
+            pedido.setLargura(util.toDouble(larguraPedido.getText()));
+            //Atualiza tabela
+            tabPedido.fireTableRowsUpdated(linhaPedido, linhaPedido);
+            totalPedido.setText(tabPedido.atualizaPreco());
+            
+        }
     }//GEN-LAST:event_alterarPedidoMouseClicked
 
     private void atualizarPrecoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_atualizarPrecoMouseClicked
-        // TODO add your handling code here:
+        Material pSelected = (Material)materialPreco.getSelectedItem();
+        pSelected.setValor(util.toDouble(m2Preco.getText()));
     }//GEN-LAST:event_atualizarPrecoMouseClicked
 
     private void tabelaPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPedidoMouseClicked
        //Pega a linha clicada
         linhaPedido = tabelaPedido.rowAtPoint(evt.getPoint());
         //Pega o contato da linha clidada
-        Pedido pedido = tabPedido.getCliente(linhaPedido);
+        Pedido pedido = tabPedido.getPedido(linhaPedido);
         //Seta os dados nos componentes
         formaPedido.setSelectedItem(pedido.getForma());
         materialPedido.setSelectedItem(pedido.getMaterial());
-        alturaPedido.setText(toString(pedido.getAltura()));
-        larguraPedido.setText(toString(pedido.getLargura()));
-        tamanhoPedido.setText(toString(pedido.getTamanho()));
+        alturaPedido.setText(util.toString(pedido.getAltura()));
+        larguraPedido.setText(util.toString(pedido.getLargura()));
+        tamanhoPedido.setText(util.toString(pedido.getTamanho()));
     }//GEN-LAST:event_tabelaPedidoMouseClicked
+
+    private void excluirPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_excluirPedidoMouseClicked
+        int[] linhasSelecionadas = tabelaPedido.getSelectedRows();
+        List<Pedido> listaExcluir = new ArrayList();
+        for (int i = 0; i < linhasSelecionadas.length; i++) {
+            Pedido pedido = tabPedido.getPedido(linhasSelecionadas[i]);
+            listaExcluir.add(pedido);
+
+        }
+        for(Pedido pedido : listaExcluir){
+            listaDePedidos.remove(pedido);
+            tabPedido.removePedido(pedido);
+        }
+        
+        totalPedido.setText(tabPedido.atualizaPreco());
+    }//GEN-LAST:event_excluirPedidoMouseClicked
+
+    private void materialPrecoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_materialPrecoItemStateChanged
+        Material pSelected = (Material)materialPreco.getSelectedItem();
+        m2Preco.setText(util.toString(pSelected.getValor()));
+    }//GEN-LAST:event_materialPrecoItemStateChanged
+
+    private void alturaPedidoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_alturaPedidoKeyPressed
+        String largura = larguraPedido.getText(); 
+        String altura = alturaPedido.getText();  
+        if(!largura.isEmpty() && !altura.isEmpty()){
+         tamanhoPedido.setText(util.calcularTamanho(altura, largura) + "m²");
+        }
+    }//GEN-LAST:event_alturaPedidoKeyPressed
+
+    private void larguraPedidoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_larguraPedidoKeyPressed
+        String largura = larguraPedido.getText(); 
+        String altura = alturaPedido.getText();  
+        if(!largura.isEmpty() && !altura.isEmpty()){
+         tamanhoPedido.setText(util.calcularTamanho(altura, largura)+ "m²");
+        }
+    }//GEN-LAST:event_larguraPedidoKeyPressed
 
 
     public static void main(String args[]) {
@@ -705,7 +744,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
     private java.awt.Button listarCliente;
     private javax.swing.JTextField m2Preco;
     private javax.swing.JComboBox materialPedido;
-    private javax.swing.JComboBox matrialPreco;
+    private javax.swing.JComboBox materialPreco;
     private javax.swing.JTextField nomeCliente;
     private javax.swing.JTextField nomePedido;
     private javax.swing.JButton pesquisarPedido;

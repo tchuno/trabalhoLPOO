@@ -31,7 +31,7 @@ public JtextFieldSomenteNumeros(int maximo) {
    
         private void jTextFieldKeyTyped(KeyEvent evt) {
        
-String caracteres="0987654321";// lista de caracters que não devem ser aceitos
+String caracteres="0987654321";// lista de caracters que devem ser aceitos
 if(!caracteres.contains(evt.getKeyChar()+"")){// se o caracter que gerou o evento estiver não estiver na lista
 evt.consume();//aciona esse propriedade para eliminar a ação do evento
 }

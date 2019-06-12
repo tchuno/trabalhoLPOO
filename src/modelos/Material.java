@@ -6,8 +6,14 @@ package modelos;
  */
 public class Material {
     private String tipo;
-    private double valor;    
+    private double valor;  
+   
 
+    public Material(String tipo, double valor) {
+        this.tipo = tipo;
+        this.valor = valor;
+    }
+    
     public String getTipo() {
         return tipo;
     }
@@ -23,4 +29,10 @@ public class Material {
     public void setValor(double valor) {
         this.valor = valor;
     }
+    
+    @Override
+    public String toString() {
+        return this.tipo;
+    }
+   
 }

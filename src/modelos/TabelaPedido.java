@@ -1,17 +1,19 @@
 package modelos;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
  *
- * @author Gui
+ * @author Guiherme - Wasys
  */
 public class TabelaPedido extends AbstractTableModel {
-    private String[] colunas=new String[]{"Forma", "Material", "Tamanho","Preco"};
+    private String[] colunas=new String[]{"Forma", "Material", "Tamanho","Preço"};
 
     private List<Pedido> lista = new ArrayList();
+    private final Util util = new Util();
 
 
     @Override
@@ -44,7 +46,7 @@ public class TabelaPedido extends AbstractTableModel {
             case 0: return customer.getForma();//if column 1 (name)
             case 1: return customer.getMaterial();//if column 2 (birthday)
             case 2: return customer.getTamanho();
-            case 3: return customer.getPreco() ;
+            case 3: return util.formatarReais(customer.getPreco());
             default : return null;
         }
     }
@@ -76,8 +78,17 @@ public class TabelaPedido extends AbstractTableModel {
         this.fireTableRowsDeleted(0,indice);//update JTable
     }
 
-    public Pedido getCliente(int linha){
+    public Pedido getPedido(int linha){
         return lista.get(linha);
+    }
+    
+    public String atualizaPreco(){
+        Double preco = 0.0;
+        for(Pedido pedido : lista){
+            preco += pedido.getPreco();
+        }
+
+        return util.formatarReais(preco);
     }
     
 }
