@@ -1,11 +1,17 @@
 package modelos;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author babar
  */
 public class Circulo extends Forma {
     private double raio;
+
+    public Circulo(double raio) {
+        this.raio = raio;
+    }
 
     public double getRaio() {
         return raio;
@@ -16,8 +22,8 @@ public class Circulo extends Forma {
     }
 
     @Override
-    public double calcularArea() {
-        return (Math.pow(raio, 2) * Math.PI);
+    public BigDecimal calcularArea() {
+        return new BigDecimal(Math.pow(raio, 2) * Math.PI);
     }
     
     

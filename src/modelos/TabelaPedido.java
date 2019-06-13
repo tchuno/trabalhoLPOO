@@ -1,6 +1,6 @@
 package modelos;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -45,7 +45,7 @@ public class TabelaPedido extends AbstractTableModel {
         switch (columnIndex) {
             case 0: return customer.getForma();//if column 1 (name)
             case 1: return customer.getMaterial();//if column 2 (birthday)
-            case 2: return customer.getTamanho();
+            case 2: return customer.getTamanho()+"m²";
             case 3: return util.formatarReais(customer.getPreco());
             default : return null;
         }
@@ -83,9 +83,9 @@ public class TabelaPedido extends AbstractTableModel {
     }
     
     public String atualizaPreco(){
-        Double preco = 0.0;
+        BigDecimal preco = new BigDecimal(0);
         for(Pedido pedido : lista){
-            preco += pedido.getPreco();
+            preco = preco.add(pedido.getPreco());
         }
 
         return util.formatarReais(preco);

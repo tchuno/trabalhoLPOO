@@ -1,5 +1,7 @@
 package modelos;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author babar
@@ -7,6 +9,11 @@ package modelos;
 public class Triangulo extends Forma {
     private double altura;
     private double lado;
+
+    public Triangulo(double altura, double lado) {
+        this.altura = altura;
+        this.lado = lado;
+    }
 
     public double getAltura() {
         return altura;
@@ -25,8 +32,8 @@ public class Triangulo extends Forma {
     }
 
     @Override
-    public double calcularArea() {
-        return ((lado*altura)/2);
+    public BigDecimal calcularArea() {
+        return new BigDecimal((lado*altura)/2);
     }
     
 }

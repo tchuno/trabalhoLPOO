@@ -1,22 +1,23 @@
 package modelos;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author babar
  */
 public abstract class Forma {
     
-    protected double area;
+    protected BigDecimal area;
         
-    public abstract double calcularArea();
+    public abstract BigDecimal calcularArea();
 
-    public double getArea() {
+    public BigDecimal getArea() {
         return area;
     }
 
-    public void setArea(double area) {
+    public void setArea(BigDecimal area) {
         this.area = area;
     }
-    
     
 }
