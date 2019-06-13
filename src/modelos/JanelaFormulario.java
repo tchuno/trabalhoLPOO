@@ -573,19 +573,17 @@ public class JanelaFormulario extends javax.swing.JFrame {
         String cpf = cpfPedido.getText();
         Cliente cliente = util.buscarCliente(listaDeClientes, cpf);
         clientePedido = new ArrayList();
+        listaDePedidos.clear();
             if(cliente != null){
                 clienteSelecionado = cliente;
                 String nomeCompleto = clienteSelecionado.getNome();
                 List<Pedido> pedidosCliente = clienteSelecionado.getPedidos();
                 if(pedidosCliente != null){
                         clientePedido = pedidosCliente;
-                        listaDePedidos.clear();
                         listaDePedidos.addAll(pedidosCliente);
                         tabPedido.atualizarTabela(listaDePedidos);
-                        totalPedido.setText(tabPedido.atualizaPreco());
-                         
+                        totalPedido.setText(tabPedido.atualizaPreco());                     
                 }else{
-                    listaDePedidos.clear();
                     tabPedido.atualizarTabela(listaDePedidos);
                     totalPedido.setText(tabPedido.atualizaPreco());
                 }
@@ -599,9 +597,15 @@ public class JanelaFormulario extends javax.swing.JFrame {
                 }
             }else{
                 JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
+                nomePedido.setText("");
+                sobrenomePedido.setText("");
+                totalPedido.setText("R$ 0,00");
+                clienteSelecionado = null;
+                tabPedido.limpaTabela();
             }
        }catch(StringIndexOutOfBoundsException e){
            JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
+           tabPedido.limpaTabela();
        }
     }//GEN-LAST:event_pesquisarPedidoMouseClicked
 
@@ -624,7 +628,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
             totalPedido.setText(tabPedido.atualizaPreco());
             
         }catch(NullPointerException e){
-             JOptionPane.showMessageDialog(null, "Campos não preenchidos");
+             JOptionPane.showMessageDialog(null, "Cliente não encontrado!");
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Campos não preenchidos");
         }
@@ -654,6 +658,8 @@ public class JanelaFormulario extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Campos não preenchidos");
            }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Campos não preenchidos");
+           }catch(IndexOutOfBoundsException e){
+               JOptionPane.showMessageDialog(null, "Não é possivel alterar!");
            }
         }
     }//GEN-LAST:event_alterarPedidoMouseClicked
