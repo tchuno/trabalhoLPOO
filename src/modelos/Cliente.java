@@ -1,8 +1,6 @@
 package modelos;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Cliente{
 
@@ -11,7 +9,6 @@ public class Cliente{
     private String email;
     private String cpf;
     private LocalDate dataNascimento;
-    private List<Pedido> pedidos;
 
     public Cliente(Long id, String nome, String email, String cpf, LocalDate dataNascimento) {
         this.id = id;
@@ -19,7 +16,6 @@ public class Cliente{
         this.email = email;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
-        this.pedidos = new ArrayList();
     }
 
     public LocalDate getDataNascimento() {
@@ -61,14 +57,4 @@ public class Cliente{
     public void setNome(String nome) {
         this.nome = nome;
     }
-
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-    
-    
 }

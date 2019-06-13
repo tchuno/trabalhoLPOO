@@ -1,7 +1,5 @@
 package modelos;
 
-import java.math.BigDecimal;
-
 /**
  *
  * @author babar
@@ -9,11 +7,6 @@ import java.math.BigDecimal;
 public class Retangulo extends Forma {
     private double altura;
     private double lado;
-
-    public Retangulo(double altura, double lado) {
-        this.altura = altura;
-        this.lado = lado;
-    } 
    
     public double getAltura() {
         return altura;
@@ -32,8 +25,8 @@ public class Retangulo extends Forma {
     }
 
     @Override
-    public BigDecimal calcularArea() {
-        return new BigDecimal(lado*altura);
+    public double calcularArea() {
+        return (lado*altura);
     }
     
 }

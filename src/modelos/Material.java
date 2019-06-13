@@ -1,17 +1,15 @@
 package modelos;
 
-import java.math.BigDecimal;
-
 /**
  *
  * @author babar
  */
 public class Material {
     private String tipo;
-    private BigDecimal valor;  
+    private double valor;  
    
 
-    public Material(String tipo, BigDecimal valor) {
+    public Material(String tipo, double valor) {
         this.tipo = tipo;
         this.valor = valor;
     }
@@ -24,11 +22,11 @@ public class Material {
         this.tipo = tipo;
     }
 
-    public BigDecimal getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
     

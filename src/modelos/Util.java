@@ -7,10 +7,7 @@ package modelos;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,9 +16,9 @@ import javax.swing.JOptionPane;
 public class Util {
     
     public List<Material> popularMateriais(List<Material> materiais){
-        materiais.add(new Material("Comum", new BigDecimal(10.0)));
-        materiais.add(new Material("Luxo", new BigDecimal(50.0)));
-        materiais.add(new Material("Premium", new BigDecimal(100.0)));
+        materiais.add(new Material("Comum", 10.0));
+        materiais.add(new Material("Luxo", 50.0));
+        materiais.add(new Material("Premium", 100.0));
         return materiais;
     }
     
@@ -47,83 +44,22 @@ public class Util {
       return Double.valueOf(string);
     }
     
-    public BigDecimal calcularTamanho(String altura, String largura, String forma){
-        BigDecimal valor = BigDecimal.ZERO;
-         if(forma.equals("Retangular")){
-               if(altura.isEmpty() || altura == null){
-                   altura = "0";
-               }if(largura.isEmpty() || largura == null){
-                   largura = "0";
-               }
-               Retangulo retangulo = new Retangulo(toDouble(altura), toDouble(largura));
-               retangulo.calcularArea();
-               retangulo.setArea(retangulo.calcularArea());
-               valor = retangulo.getArea();
-            }if(forma.equals("Triangular")){
-               if(altura.isEmpty() || altura == null){
-                   altura = "0";
-               }if(largura.isEmpty() || largura == null){
-                   largura = "0";
-               }
-               Triangulo triangulo = new Triangulo(toDouble(altura), toDouble(largura));
-               triangulo.calcularArea();
-               triangulo.setArea(triangulo.calcularArea());
-               valor = triangulo.getArea();
-            }if(forma.equals("Circular")){
-               if(largura.isEmpty() || largura == null){
-                   largura = "0";
-               }
-               Circulo circulo = new Circulo(toDouble(largura));
-               circulo.calcularArea();
-               circulo.setArea(circulo.calcularArea());
-               valor = circulo.getArea();
-               String convert = String.valueOf(valor);
-               convert = convert.substring(0,convert.indexOf(".")+2);
-               valor = new BigDecimal(convert);
-            }
-         return valor;
+    public String calcularTamanho(String altura, String largura){
+        BigDecimal alturaD = new BigDecimal(altura);
+        BigDecimal larguraD = new BigDecimal(largura);
+        BigDecimal result = alturaD.multiply(alturaD);
+        String resultStr = String.valueOf(result);
+      return resultStr;
     }
     
-    public BigDecimal tamanhoAltLarg(String tamanho, String forma){
-        if(tamanho.isEmpty() || tamanho == null){
-            return new BigDecimal(0);
-        }
-        if(forma.equals("Retangular")){
-            Double tam = toDouble(tamanho);
-            tam = tam/2;
-            return new BigDecimal(tam);
-        }if(forma.equals("Triangular")){
-            Double tam = toDouble(tamanho);
-            tam = (tam/2)/2;
-            return new BigDecimal(tam);
-        }if(forma.equals("Circular")){
-            Double tam = toDouble(tamanho);
-            tam = (Math.sqrt(tam)) / Math.PI;
-            String convert = toString(tam);
-            convert = convert.substring(0,convert.indexOf(".")+2);
-            return new BigDecimal(convert);
-        }
-        return new BigDecimal(0);
-    }
-    
-    public BigDecimal calcularPreco(String tamanho, Material material){
-        BigDecimal tamanhoB = new BigDecimal(tamanho);
-        tamanhoB = tamanhoB.multiply(material.getValor());
-      return tamanhoB;
+    public double calcularPreco(Forma forma, Material material){
+      return ((forma.calcularArea())*(material.getValor()));
     }
    
-    public String formatarReais(BigDecimal valor){
-        Locale.setDefault(new Locale("pt", "BR"));
-        return NumberFormat.getCurrencyInstance().format(valor);
+    public String formatarReais(Double valor){
+        DecimalFormat df = new DecimalFormat();
+        df.applyPattern("R$ #,##0.00");
+        return df.format(valor);
     }
     
-    public Cliente buscarCliente(List<Cliente> clientes, String pesquisa){
-        for(Cliente cliente : clientes){
-            String cpfFormatado = limpaCPF(cliente.getCpf());
-            if(cpfFormatado.equals(pesquisa)){
-                return cliente;
-            }
-        }
-        return null;
-    }
 }
