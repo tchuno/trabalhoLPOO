@@ -99,7 +99,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         materialPreco = new javax.swing.JComboBox();
-        m2Preco = new JtextFieldSomenteNumPonto(10);
+        m2Preco = new javax.swing.JTextField();
         atualizarPreco = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -569,14 +569,16 @@ public class JanelaFormulario extends javax.swing.JFrame {
     }//GEN-LAST:event_tabelaClienteMouseClicked
 
     private void pesquisarPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pesquisarPedidoMouseClicked
-       try{
+        try{
         String cpf = cpfPedido.getText();
         Cliente cliente = util.buscarCliente(listaDeClientes, cpf);
+        clientePedido = new ArrayList();
             if(cliente != null){
                 clienteSelecionado = cliente;
                 String nomeCompleto = clienteSelecionado.getNome();
                 List<Pedido> pedidosCliente = clienteSelecionado.getPedidos();
                 if(pedidosCliente != null){
+                        clientePedido = pedidosCliente;
                         listaDePedidos.clear();
                         listaDePedidos.addAll(pedidosCliente);
                         tabPedido.atualizarTabela(listaDePedidos);
@@ -649,17 +651,24 @@ public class JanelaFormulario extends javax.swing.JFrame {
             totalPedido.setText(tabPedido.atualizaPreco());
             
            }catch(NullPointerException e){
-               JOptionPane.showMessageDialog(null, "Campos não preenchidos");
+                JOptionPane.showMessageDialog(null, "Campos não preenchidos");
            }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(null, "Campos não preenchidos");
+                JOptionPane.showMessageDialog(null, "Campos não preenchidos");
            }
         }
     }//GEN-LAST:event_alterarPedidoMouseClicked
 
     private void atualizarPrecoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_atualizarPrecoMouseClicked
-        Material pSelected = (Material) materialPreco.getSelectedItem();
-        pSelected.setValor(new BigDecimal(m2Preco.getText()));
-        m2Preco.setText(util.formatarReais(pSelected.getValor()));
+        try{
+            Material pSelected = (Material) materialPreco.getSelectedItem();
+            String preco = m2Preco.getText().replace(".", "");
+            preco = preco.replace(",", ".");
+            preco = preco.replace("R$ ", "");
+            pSelected.setValor(new BigDecimal(preco));
+            m2Preco.setText(util.formatarReais(pSelected.getValor()));
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Valor inválido!");
+        }
     }//GEN-LAST:event_atualizarPrecoMouseClicked
 
     private void tabelaPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPedidoMouseClicked
@@ -676,22 +685,27 @@ public class JanelaFormulario extends javax.swing.JFrame {
     }//GEN-LAST:event_tabelaPedidoMouseClicked
 
     private void excluirPedidoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_excluirPedidoMouseClicked
-        int[] linhasSelecionadas = tabelaPedido.getSelectedRows();
-        List<Pedido> listaExcluir = new ArrayList();
-        
-        for (int i = 0; i < linhasSelecionadas.length; i++) {
-            Pedido pedido = tabPedido.getPedido(linhasSelecionadas[i]);
-            listaExcluir.add(pedido);
+        try{
+            int[] linhasSelecionadas = tabelaPedido.getSelectedRows();
+            List<Pedido> listaExcluir = new ArrayList();
 
+            for (int i = 0; i < linhasSelecionadas.length; i++) {
+                Pedido pedido = tabPedido.getPedido(linhasSelecionadas[i]);
+                listaExcluir.add(pedido);
+
+            }
+            for(Pedido pedido : listaExcluir){
+                clientePedido.remove(pedido);
+                listaDePedidos.remove(pedido);
+                tabPedido.removePedido(pedido);
+            }
+
+            clienteSelecionado.setPedidos(clientePedido);
+
+            totalPedido.setText(tabPedido.atualizaPreco());
+        }catch(NullPointerException e){
+            JOptionPane.showMessageDialog(null, "Não é possível excluir!");
         }
-        for(Pedido pedido : listaExcluir){
-            listaDePedidos.remove(pedido);
-            tabPedido.removePedido(pedido);
-        }
-        
-        clienteSelecionado.setPedidos(listaDePedidos);
-        
-        totalPedido.setText(tabPedido.atualizaPreco());
     }//GEN-LAST:event_excluirPedidoMouseClicked
 
     private void materialPrecoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_materialPrecoItemStateChanged
@@ -772,8 +786,7 @@ public class JanelaFormulario extends javax.swing.JFrame {
     private void m2PrecoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_m2PrecoMouseClicked
         String preco = m2Preco.getText();
         preco = preco.replace("R$ ", "");
-        preco = preco.replace(".", ",");
-        m2Preco.setText(preco.replace(",", "."));
+        m2Preco.setText(preco);
     }//GEN-LAST:event_m2PrecoMouseClicked
 
     private void incluirClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incluirClienteMouseClicked
@@ -783,6 +796,13 @@ public class JanelaFormulario extends javax.swing.JFrame {
         }else{
             try{
                 String nome = nomeCliente.getText();
+                if(nome.isEmpty() || nome == null){
+                    JOptionPane.showMessageDialog(null, "Nome é Obrigatório!");
+                    return;
+                }if(!nome.contains(" ")){
+                    JOptionPane.showMessageDialog(null, "Digite o Nome Completo!");
+                    return;
+                }
                 String email = emailCliente.getText();
                 LocalDate dataNascimento = LocalDate.parse(dataCliente.getText(),DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 String cpf = util.imprimeCPF(cpfCliente.getText());

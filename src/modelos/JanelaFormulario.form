@@ -696,9 +696,6 @@
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="m2PrecoMouseClicked"/>
               </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JtextFieldSomenteNumPonto(10)"/>
-              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="atualizarPreco">
               <Properties>
