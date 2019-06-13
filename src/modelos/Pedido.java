@@ -1,5 +1,7 @@
 package modelos;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author babar
@@ -8,14 +10,14 @@ public class Pedido {
     
     private Long id;
     private String forma;
-    private String material;
+    private Material material;
     private Cliente cliente;
     private double largura;
     private double altura;
     private double tamanho;
-    private double preco;
+    private BigDecimal preco;
     
-      public Pedido(Long id, String forma, String material, double largura, double altura, double tamanho, double preco) {
+      public Pedido(Long id, String forma, Material material, double largura, double altura, double tamanho, BigDecimal preco) {
         this.id = id;
         this.forma = forma;
         this.material = material;
@@ -41,11 +43,11 @@ public class Pedido {
         this.forma = forma;
     }
 
-    public String getMaterial() {
+    public Material getMaterial() {
         return material;
     }
 
-    public void setMaterial(String material) {
+    public void setMaterial(Material material) {
         this.material = material;
     }
 
@@ -73,11 +75,11 @@ public class Pedido {
         this.tamanho = tamanho;
     }
 
-    public double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 
